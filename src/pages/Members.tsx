@@ -1,7 +1,9 @@
-import React from 'react';
-import { Mail, Phone, MapPin, Calendar, Award, Users, Target, Briefcase } from 'lucide-react';
+import React, { useState, useMemo } from 'react';
+import { Mail, Phone, MapPin, Calendar, Award, Users, Target, Briefcase, Search } from 'lucide-react';
 
 const Members: React.FC = () => {
+  const [searchTerm, setSearchTerm] = useState('');
+
   const teamMembers = [
     {
       id: 1,
@@ -71,6 +73,12 @@ const Members: React.FC = () => {
     }
   ];
 
+  const filteredMembers = useMemo(() => {
+    return teamMembers.filter(member =>
+      member.name.toLowerCase().includes(searchTerm.toLowerCase())
+    );
+  }, [searchTerm, teamMembers]);
+
   const formatDate = (dateString: string) => {
     return new Date(dateString).toLocaleDateString('en-US', {
       year: 'numeric',
@@ -85,7 +93,6 @@ const Members: React.FC = () => {
   return (
     <div className="min-h-screen bg-gray-50 dark:bg-gray-900 py-8">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        {/* Header */}
         <div className="mb-12 text-center">
           <h1 className="text-4xl font-bold text-gray-900 dark:text-white mb-4">
             Our Team
@@ -97,42 +104,24 @@ const Members: React.FC = () => {
           </p>
         </div>
 
-        {/* Team Stats */}
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-12">
-          <div className="bg-white dark:bg-gray-800 rounded-lg shadow-md p-6 text-center border border-gray-200 dark:border-gray-700">
-            <div className="bg-primary-100 dark:bg-primary-900/20 p-3 rounded-full w-fit mx-auto mb-4">
-              <Users className="h-8 w-8 text-primary-600 dark:text-primary-400" />
-            </div>
-            <div className="text-3xl font-bold text-gray-900 dark:text-white mb-2">200+</div>
-            <div className="text-gray-600 dark:text-gray-400">Interns Managed</div>
-          </div>
-          <div className="bg-white dark:bg-gray-800 rounded-lg shadow-md p-6 text-center border border-gray-200 dark:border-gray-700">
-            <div className="bg-secondary-100 dark:bg-secondary-900/20 p-3 rounded-full w-fit mx-auto mb-4">
-              <Target className="h-8 w-8 text-secondary-600 dark:text-secondary-400" />
-            </div>
-            <div className="text-3xl font-bold text-gray-900 dark:text-white mb-2">55+</div>
-            <div className="text-gray-600 dark:text-gray-400">Projects Completed</div>
-          </div>
-          <div className="bg-white dark:bg-gray-800 rounded-lg shadow-md p-6 text-center border border-gray-200 dark:border-gray-700">
-            <div className="bg-green-100 dark:bg-green-900/20 p-3 rounded-full w-fit mx-auto mb-4">
-              <Award className="h-8 w-8 text-green-600 dark:text-green-400" />
-            </div>
-            <div className="text-3xl font-bold text-gray-900 dark:text-white mb-2">18+</div>
-            <div className="text-gray-600 dark:text-gray-400">Years Combined Experience</div>
-          </div>
+        <div className="mb-10 max-w-md mx-auto relative">
+          <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 h-5 w-5" />
+          <input
+            type="text"
+            value={searchTerm}
+            onChange={(e) => setSearchTerm(e.target.value)}
+            placeholder="Search by name..."
+            className="w-full pl-10 pr-4 py-2 border border-gray-300 dark:border-gray-600 rounded-md focus:ring-2 focus:ring-primary-500 focus:border-transparent bg-white dark:bg-gray-700 text-gray-900 dark:text-white"
+          />
         </div>
 
-        {/* Team Members */}
         <div className="space-y-8">
-          {teamMembers.map((member, index) => (
+          {filteredMembers.map((member, index) => (
             <div
               key={member.id}
-              className={`bg-white dark:bg-gray-800 rounded-xl shadow-lg border border-gray-200 dark:border-gray-700 overflow-hidden ${
-                index % 2 === 1 ? 'lg:flex-row-reverse' : ''
-              }`}
+              className={`bg-white dark:bg-gray-800 rounded-xl shadow-lg border border-gray-200 dark:border-gray-700 overflow-hidden ${index % 2 === 1 ? 'lg:flex-row-reverse' : ''}`}
             >
               <div className="lg:flex">
-                {/* Profile Section */}
                 <div className="lg:w-1/3 p-8 bg-gradient-to-br from-primary-50 to-secondary-50 dark:from-gray-700 dark:to-gray-800">
                   <div className="text-center">
                     <div className="bg-primary-600 text-white rounded-full w-24 h-24 flex items-center justify-center text-2xl font-bold mx-auto mb-4">
@@ -148,23 +137,16 @@ const Members: React.FC = () => {
                       {member.bio}
                     </p>
 
-                    {/* Contact Info */}
                     <div className="space-y-3 text-left">
                       <div className="flex items-center space-x-3">
                         <Mail className="h-4 w-4 text-gray-400" />
-                        <a
-                          href={`mailto:${member.email}`}
-                          className="text-primary-600 hover:text-primary-700 dark:text-primary-400 dark:hover:text-primary-300 text-sm"
-                        >
+                        <a href={`mailto:${member.email}`} className="text-primary-600 hover:text-primary-700 dark:text-primary-400 dark:hover:text-primary-300 text-sm">
                           {member.email}
                         </a>
                       </div>
                       <div className="flex items-center space-x-3">
                         <Phone className="h-4 w-4 text-gray-400" />
-                        <a
-                          href={`tel:${member.phone}`}
-                          className="text-gray-600 dark:text-gray-400 hover:text-primary-600 dark:hover:text-primary-400 text-sm"
-                        >
+                        <a href={`tel:${member.phone}`} className="text-gray-600 dark:text-gray-400 hover:text-primary-600 dark:hover:text-primary-400 text-sm">
                           {member.phone}
                         </a>
                       </div>
@@ -184,9 +166,7 @@ const Members: React.FC = () => {
                   </div>
                 </div>
 
-                {/* Details Section */}
                 <div className="lg:w-2/3 p-8">
-                  {/* Stats */}
                   <div className="grid grid-cols-3 gap-4 mb-8">
                     <div className="text-center">
                       <div className="text-2xl font-bold text-gray-900 dark:text-white">
@@ -215,7 +195,6 @@ const Members: React.FC = () => {
                   </div>
 
                   <div className="grid md:grid-cols-2 gap-8">
-                    {/* Responsibilities */}
                     <div>
                       <div className="flex items-center mb-4">
                         <Briefcase className="h-5 w-5 text-primary-600 dark:text-primary-400 mr-2" />
@@ -235,7 +214,6 @@ const Members: React.FC = () => {
                       </ul>
                     </div>
 
-                    {/* Achievements */}
                     <div>
                       <div className="flex items-center mb-4">
                         <Award className="h-5 w-5 text-primary-600 dark:text-primary-400 mr-2" />
@@ -259,33 +237,6 @@ const Members: React.FC = () => {
               </div>
             </div>
           ))}
-        </div>
-
-        {/* Contact CTA */}
-        <div className="mt-16 bg-gradient-to-r from-primary-600 to-secondary-600 rounded-xl p-8 text-center">
-          <h2 className="text-2xl font-bold text-white mb-4">
-            Have Questions About Our Intern Program?
-          </h2>
-          <p className="text-primary-100 mb-6 max-w-2xl mx-auto">
-            Our team is here to help. Whether you're interested in joining our program or 
-            want to learn more about our processes, don't hesitate to reach out.
-          </p>
-          <div className="flex flex-col sm:flex-row gap-4 justify-center">
-            <a
-              href="mailto:hr@humblewalking.com"
-              className="inline-flex items-center px-6 py-3 bg-white text-primary-600 font-medium rounded-md hover:bg-gray-50 transition-colors duration-200"
-            >
-              <Mail className="mr-2 h-5 w-5" />
-              Contact HR Team
-            </a>
-            <a
-              href="tel:+1-555-0200"
-              className="inline-flex items-center px-6 py-3 bg-primary-700 text-white font-medium rounded-md hover:bg-primary-800 transition-colors duration-200"
-            >
-              <Phone className="mr-2 h-5 w-5" />
-              Call Us
-            </a>
-          </div>
         </div>
       </div>
     </div>
