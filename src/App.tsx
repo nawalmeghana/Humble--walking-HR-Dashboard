@@ -1,10 +1,8 @@
-import React from 'react';
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 import { AuthProvider } from './contexts/AuthContext';
 import { ThemeProvider } from './contexts/ThemeContext';
 import AuthGuard from './components/Auth/AuthGuard';
 import Navbar from './components/Layout/Navbar';
-import Home from './pages/Home';
 import Login from './pages/Login';
 import Dashboard from './pages/Dashboard';
 import AddIntern from './pages/AddIntern';
@@ -22,14 +20,6 @@ function App() {
               <Route path="/login" element={<Login />} />
               <Route
                 path="/"
-                element={
-                  <AuthGuard>
-                    <Home />
-                  </AuthGuard>
-                }
-              />
-              <Route
-                path="/dashboard"
                 element={
                   <AuthGuard>
                     <Dashboard />
